@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WeatherData : NSObject
 + (instancetype)sharedInstance;
-- (void)fetchCityForecastWeatherData:(NSString *) city completion:(void(^)(NSDictionary *weatherData, NSError *error)) completion;
+- (void)fetchCityForecastWeatherData:(NSString *) city completion:(void(^)(NSDictionary *dictionary, NSError *error)) completion;
 - (void)fetchAssociatedCityNameData:(NSString *) name completion:(void(^)(NSArray *cityName, NSError *error)) completion;
 - (void)cancelCurrentCitySearch;
 @end

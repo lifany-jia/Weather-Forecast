@@ -35,15 +35,15 @@ static NSString *const CityDataErrorDomain = @"CityDataError";
         completion(nil, cityError);
     }
     NSString *key = @"86ab17e2e6644c74a2d32502261507";
-    NSString *lang = @"zh_cmn";
+    NSString *lang = @"zh";
     NSString *alert = @"yes";
     NSString *aqi = @"yes";
     NSString *day = @"7";
-    NSURLComponents *components = [NSURLComponents componentsWithString:@"http://api.weatherapi.com/v1/forecast.json "];
+    NSURLComponents *components = [NSURLComponents componentsWithString:@"https://api.weatherapi.com/v1/forecast.json "];
     components.queryItems = @[
         [NSURLQueryItem queryItemWithName:@"key" value:key],
         [NSURLQueryItem queryItemWithName:@"q" value:city],
-        [NSURLQueryItem queryItemWithName:@"day" value:day],
+        [NSURLQueryItem queryItemWithName:@"days" value:day],
         [NSURLQueryItem queryItemWithName:@"lang" value:lang],
         [NSURLQueryItem queryItemWithName:@"alerts" value:alert],
         [NSURLQueryItem queryItemWithName:@"aqi" value:aqi]
@@ -120,10 +120,11 @@ static NSString *const CityDataErrorDomain = @"CityDataError";
     [self.citySearchTask cancel];
     self.citySearchTask = nil;
     NSString *key = @"86ab17e2e6644c74a2d32502261507";
-    NSURLComponents *components = [NSURLComponents componentsWithString:@"http://api.weatherapi.com/v1/search.json"];
+    NSURLComponents *components = [NSURLComponents componentsWithString:@"https://api.weatherapi.com/v1/search.json"];
     components.queryItems = @[
         [NSURLQueryItem queryItemWithName:@"key" value:key],
-        [NSURLQueryItem queryItemWithName:@"q" value:name]
+        [NSURLQueryItem queryItemWithName:@"q" value:name],
+        [NSURLQueryItem queryItemWithName:@"lang" value:@"zh"]
     ];
     NSURL *url = components.URL;
     if (!url) {
