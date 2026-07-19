@@ -286,7 +286,9 @@
     return cards;
 }
 @end
-
+@interface WeatherModel ()
+@property (nonatomic, strong) NSMutableArray<CityWeather *> *citys;
+@end
 @implementation WeatherModel
 + (instancetype)sharedInstance {
     static WeatherModel *model = nil;
@@ -297,5 +299,15 @@
     });
     return model;
 }
-
+- (void)addCity:(CityWeather *)city {
+    for (CityWeather *temp in self.citys) {
+        if ([city.city isEqualToString:temp.city]) {
+            return;
+        }
+    }
+    [self.citys addObject:city];
+}
+- (void)removeCity:(NSInteger)index {
+    [self.citys removeObjectAtIndex:index];
+}
 @end

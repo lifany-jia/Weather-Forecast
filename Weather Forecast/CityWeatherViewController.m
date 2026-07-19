@@ -51,6 +51,8 @@
 }
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+    // alpha = 0 设置得太早，push 过程中，导航栏会重新布局、生成/更新自己的内部视图，所以alpha=0可能被覆盖掉
+    // 所以在 viewDidLayoutSubviews 或 viewDidAppear 再按当前滚动位置强制同步一次 alpha/hidden
     [self updateHeaderAlphaWithScrollView:self.tableView];
 }
 - (void)setupNavigationTitle {
@@ -178,7 +180,7 @@
 - (void)updateHeaderAlphaWithScrollView:(UIScrollView *)scrollView {
     CGFloat offset = scrollView.contentOffset.y + scrollView.adjustedContentInset.top;
     offset = MAX(0, offset);
-
+    // 避免 alpha 超过 1
     CGFloat progressCity = MIN(offset / 74.0, 1.0);
     self.cityName.alpha = 1.0 - progressCity;
     self.navigationLabel.alpha = progressCity;
@@ -192,7 +194,7 @@
     self.weather.alpha = 1.0 - progressWeather;
 }
 - (void)addCity{
-    [[WeatherModel sharedInstance].citys addObject:self.cityData];
+    [[WeatherModel sharedInstance] addCity:self.cityData];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {

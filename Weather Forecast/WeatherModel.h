@@ -64,8 +64,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype) sharedInstance;
 @end
 @interface WeatherModel : NSObject
-@property (nonatomic, strong) NSMutableArray<CityWeather *> *citys;
+@property (nonatomic, strong, readonly) NSMutableArray<CityWeather *> *citys;
 + (instancetype) sharedInstance;
+- (void)addCity:(CityWeather *) city;
+- (void)removeCity:(NSInteger) index;
 @end
 
 NS_ASSUME_NONNULL_END
