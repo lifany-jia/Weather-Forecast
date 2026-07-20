@@ -196,9 +196,7 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
     // 只不过输入变化不再走 UISearchBarDelegate 的 textDidChange，
     // 而是走 UISearchResultsUpdating 的 updateSearchResultsForSearchController:
     self.search.searchResultsUpdater = self;
-    self.search.obscuresBackgroundDuringPresentation = NO;
-    // 如果结果直接显示在当前页，不需要遮罩层可以关掉
-//    self.searchController.obscuresBackgroundDuringPresentation = NO;
+//    self.search.obscuresBackgroundDuringPresentation = NO;
     self.search.searchBar.placeholder = @"搜索城市";
     self.search.searchBar.delegate = self;
     self.search.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -268,39 +266,6 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
        // 约0.25秒之后，把searchBlock提交到主队列执行
        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), searchBlock);
 }
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    NSString *keyword = [searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if (keyword.length == 0) {
-        return;
-    }
-
-    if (self.pendingSearchBlock) {
-        dispatch_block_cancel(self.pendingSearchBlock);
-        self.pendingSearchBlock = nil;
-    }
-
-    if (self.cityLists.count > 0) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-        [self fetchWeatherForSearchResultAtIndexPath:indexPath];
-        return;
-    }
-
-    __weak typeof(self) weakSelf = self;
-    [[WeatherData sharedInstance] fetchAssociatedCityNameData:keyword completion:^(NSArray * _Nonnull cityName, NSError * _Nonnull error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            if (!strongSelf || error || cityName.count == 0) {
-                return;
-            }
-
-            strongSelf.cityLists = cityName;
-            strongSelf.tableViewSearch.hidden = NO;
-            [strongSelf.tableViewSearch reloadData];
-            NSIndexPath *indexPath  = [NSIndexPath indexPathForRow:0 inSection:0];
-            [strongSelf fetchWeatherForSearchResultAtIndexPath:indexPath];
-        });
-    }];
-}
 // UISearchBar写在这个函数里
 //- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 
@@ -348,6 +313,39 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
             __strong typeof(weakSelf) strongSelf = weakSelf;
             CityWeatherViewController *city = [[CityWeatherViewController alloc] initWithCityData:cityWeather];
             [strongSelf.navigationController pushViewController:city animated:YES];
+        });
+    }];
+}
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    NSString *keyword = [searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (keyword.length == 0) {
+        return;
+    }
+
+    if (self.pendingSearchBlock) {
+        dispatch_block_cancel(self.pendingSearchBlock);
+        self.pendingSearchBlock = nil;
+    }
+
+    if (self.cityLists.count > 0) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        [self fetchWeatherForSearchResultAtIndexPath:indexPath];
+        return;
+    }
+
+    __weak typeof(self) weakSelf = self;
+    [[WeatherData sharedInstance] fetchAssociatedCityNameData:keyword completion:^(NSArray * _Nonnull cityName, NSError * _Nonnull error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (!strongSelf || error || cityName.count == 0) {
+                return;
+            }
+
+            strongSelf.cityLists = cityName;
+            strongSelf.tableViewSearch.hidden = NO;
+            [strongSelf.tableViewSearch reloadData];
+            NSIndexPath *indexPath  = [NSIndexPath indexPathForRow:0 inSection:0];
+            [strongSelf fetchWeatherForSearchResultAtIndexPath:indexPath];
         });
     }];
 }

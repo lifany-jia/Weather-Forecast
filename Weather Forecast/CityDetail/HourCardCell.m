@@ -45,6 +45,7 @@
     UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemThinMaterialDark];
     UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
     blurView.userInteractionEnabled = NO;
+    blurView.alpha = 0.5;
     [self.contentView insertSubview:blurView atIndex:0];
     [blurView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.contentView);
