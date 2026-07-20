@@ -50,7 +50,7 @@
         make.bottom.equalTo(self.contentView);
     }];
 }
-- (void)updateWithData:(HourWeather *)data {
+- (void)updateWithData:(HourWeatherModel *)data {
     self.date.text = data.hour;
     NSString *temp = [NSString stringWithFormat:@"%ld°", (long)data.hour_temp];
     self.temperature.text = temp;

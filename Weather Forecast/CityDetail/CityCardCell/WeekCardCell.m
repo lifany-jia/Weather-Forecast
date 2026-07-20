@@ -9,7 +9,7 @@
 #import "WeekWeatherTableViewCell.h"
 #import <Masonry/Masonry.h>
 @interface WeekCardCell () <UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic, strong) NSArray<DateWeather *> * data;
+@property (nonatomic, strong) NSArray<DateWeatherModel *> * data;
 @property (nonatomic, strong) UITableView *tableView;
 @end
 @implementation WeekCardCell
@@ -69,7 +69,7 @@
     [cell updateWithData:self.data[indexPath.row]];
     return cell;
 }
-- (void)updateWithData:(NSArray<DateWeather *> *)data {
+- (void)updateWithData:(NSArray<DateWeatherModel *> *)data {
     self.data = data;
     [self.tableView reloadData];
 }

@@ -8,12 +8,12 @@
 #import "HomeViewController.h"
 #import "CityWeatherCell.h"
 #import "CityWeatherViewController.h"
-#import "WeatherModel.h"
+#import "AllCityWeatherModel.h"
 #import "WeatherData.h"
 #import <Masonry/Masonry.h>
 @interface HomeViewController () <UISearchResultsUpdating, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) WeatherModel *model;
+@property (nonatomic, strong) AllCityWeatherModel *model;
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *array;
 @property (nonatomic, strong) UIBarButtonItem *barButton;
 @property (nonatomic, strong) UIBarButtonItem *finishButton;
@@ -40,13 +40,13 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
     self.cityLists = @[];
     [self setupSearchController];
     [self setupSearchTableView];
-    self.model = [WeatherModel sharedInstance];
+    self.model = [AllCityWeatherModel sharedInstance];
     [self setupTableView];
     __weak typeof(self) weakSelf = self;
     [[WeatherData sharedInstance] fetchCityForecastWeatherData:@"西安" completion:^(NSDictionary * _Nonnull dictionary, NSError * _Nonnull error) {
         if (error) return;
         dispatch_async(dispatch_get_main_queue(), ^{
-            CityWeather *cityWeather = [[CityWeather alloc] initWithData:dictionary];
+            CityWeatherModel *cityWeather = [[CityWeatherModel alloc] initWithData:dictionary];
             [weakSelf.model.citys addObject:cityWeather];
             [weakSelf.tableView reloadData];
         });
@@ -307,7 +307,7 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
         }
         // 这部分不可以写在该函数下面，因为这一整块都是异步的，不会等这个请求结束就会运行该函数下面的代码，而此时dictionary还没有值
         weakSelf.cityWeatherData = dictionary;
-        CityWeather *cityWeather = [[CityWeather alloc] initWithData:self.cityWeatherData];
+        CityWeatherModel *cityWeather = [[CityWeatherModel alloc] initWithData:self.cityWeatherData];
         // pushViewController 是UIKit操作，必须回到主线程
         dispatch_async(dispatch_get_main_queue(), ^{
             __strong typeof(weakSelf) strongSelf = weakSelf;

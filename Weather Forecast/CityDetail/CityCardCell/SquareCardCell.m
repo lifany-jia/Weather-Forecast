@@ -7,13 +7,14 @@
 
 #import "SquareCardCell.h"
 #import "SquareCollectionCell.h"
+#import "SquareCardsModel.h"
 #import <math.h>
 #import <Masonry/Masonry.h>
 @interface SquareCardCell () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (nonatomic, strong) UICollectionView *collection;
 @property (nonatomic, strong) UICollectionViewFlowLayout *layout;
-@property (nonatomic, strong) CityWeather *data;
-@property (nonatomic, strong) SquareCards *cards;
+@property (nonatomic, strong) CityWeatherModel *data;
+@property (nonatomic, strong) SquareCardsModel *cards;
 @end
 @implementation SquareCardCell
 
@@ -33,7 +34,7 @@
         self.contentView.layer.cornerRadius = 20;
         self.backgroundColor = [UIColor clearColor];
         self.contentView.backgroundColor = [UIColor clearColor];
-        self.cards = [SquareCards sharedInstance];
+        self.cards = [SquareCardsModel sharedInstance];
         [self setupCell];
     }
     return self;
@@ -81,7 +82,7 @@
     return cell;
 }
 
-- (void)updateWithData:(CityWeather *)data {
+- (void)updateWithData:(CityWeatherModel *)data {
     self.data = data;
     [self.collection reloadData];
 }

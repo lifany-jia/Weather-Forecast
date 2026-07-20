@@ -7,7 +7,7 @@
 
 #import "HourCardCell.h"
 #import "HourWeatherCollectionCell.h"
-#import "WeatherModel.h"
+#import "AllCityWeatherModel.h"
 #import <Masonry/Masonry.h>
 @interface HourCardCell () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (nonatomic, strong) UICollectionView *collection;

@@ -6,15 +6,16 @@
 //
 
 #import "CityWeatherViewController.h"
-#import "WeatherModel.h"
+#import "AllCityWeatherModel.h"
 #import "WeatherCardCell.h"
+#import "WeatherCardsModel.h"
 #import "HourCardCell.h"
 #import "WeekCardCell.h"
 #import "SquareCardCell.h"
 #import <Masonry/Masonry.h>
 @interface CityWeatherViewController () <UITableViewDelegate, UITableViewDataSource>
-@property (nonatomic, strong) CityWeather *cityData;
-@property (nonatomic, strong) WeatherCards *weatherCards;
+@property (nonatomic, strong) CityWeatherModel *cityData;
+@property (nonatomic, strong) WeatherCardsModel *weatherCards;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UILabel *cityName;
@@ -25,11 +26,11 @@
 @end
 
 @implementation CityWeatherViewController
-- (instancetype)initWithCityData:(CityWeather *)cityData {
+- (instancetype)initWithCityData:(CityWeatherModel *)cityData {
     self = [super init];
     if (self) {
         self.cityData = cityData;
-        self.weatherCards = [WeatherCards sharedInstance];
+        self.weatherCards = [WeatherCardsModel sharedInstance];
     }
     return self;
 }
@@ -194,7 +195,7 @@
     self.weather.alpha = 1.0 - progressWeather;
 }
 - (void)addCity{
-    [[WeatherModel sharedInstance] addCity:self.cityData];
+    [[AllCityWeatherModel sharedInstance] addCity:self.cityData];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {

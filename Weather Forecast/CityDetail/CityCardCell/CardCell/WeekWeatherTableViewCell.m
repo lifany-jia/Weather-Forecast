@@ -85,7 +85,7 @@
             make.right.equalTo(line.mas_left).offset(-15);
     }];
 }
-- (void)updateWithData:(DateWeather *)data {
+- (void)updateWithData:(DateWeatherModel *)data {
     self.date.text = data.date;
     UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration configurationPreferringMulticolor];
     UIImage *icon = [UIImage systemImageNamed:data.day_temp_icon withConfiguration:config];

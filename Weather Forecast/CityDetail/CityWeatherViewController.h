@@ -6,11 +6,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WeatherModel.h"
+#import "CityWeatherModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CityWeatherViewController : UIViewController
-- (instancetype)initWithCityData:(CityWeather *) cityData;
+- (instancetype)initWithCityData:(CityWeatherModel *) cityData;
 @end
 
 NS_ASSUME_NONNULL_END

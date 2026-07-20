@@ -1,38 +1,13 @@
 //
-//  WeatherModel.m
+//  CityWeatherModel.m
 //  Weather Forecast
 //
-//  Created by lifany on 2026/7/15.
+//  Created by lifany on 2026/7/20.
 //
-#import "WeatherModel.h"
-@implementation HourWeather
-- (instancetype)initWithHour:(NSString *)hour temperature:(CGFloat)hour_temp icon:(NSString *)icon code:(NSInteger)code{
-    self = [super init];
-    if (self) {
-        self.hour = hour;
-        self.hour_temp = hour_temp;
-        self.hour_temp_icon = icon;
-        self.code = code;
-    }
-    return self;
-}
-@end
 
-@implementation DateWeather
-- (instancetype)initWithDate:(NSString *)date max_temp:(CGFloat)max_temp min_temp:(CGFloat)min_temp icon:(NSString *)icon code:(NSInteger)code{
-    self = [super init];
-    if (self) {
-        self.date = date;
-        self.max_temp = max_temp;
-        self.min_temp = min_temp;
-        self.day_temp_icon = icon;
-        self.code = code;
-    }
-    return self;
-}
-@end
+#import "CityWeatherModel.h"
 
-@implementation CityWeather
+@implementation CityWeatherModel
 - (instancetype) initWithData:(NSDictionary *) data {
     self = [super init];
     if (self) {
@@ -83,7 +58,7 @@
         CGFloat hourTemp = [hours[i][@"temp_c"] doubleValue];
         NSInteger hourTempIconCode = [hours[i][@"condition"][@"code"] integerValue];
         NSString *hourTempIcon = [self weatherIconWithCode:hourTempIconCode image:nil];
-        HourWeather *hourWeather = [[HourWeather alloc] initWithHour:timeStr temperature:hourTemp icon:hourTempIcon code:hourTempIconCode];
+        HourWeatherModel *hourWeather = [[HourWeatherModel alloc] initWithHour:timeStr temperature:hourTemp icon:hourTempIcon code:hourTempIconCode];
         [tempHour addObject:hourWeather];
     }
     self.todayHourWeather = tempHour;
@@ -95,7 +70,7 @@
         CGFloat min_temp = [data[@"day"][@"mintemp_c"] doubleValue];
         NSInteger tempIconCode = [data[@"day"][@"condition"][@"code"] integerValue];
         NSString *tempIcon = [self weatherIconWithCode:tempIconCode image:nil];
-        DateWeather *dataWeather = [[DateWeather alloc] initWithDate:date max_temp:max_temp min_temp:min_temp icon:tempIcon code:tempIconCode];
+        DateWeatherModel *dataWeather = [[DateWeatherModel alloc] initWithDate:date max_temp:max_temp min_temp:min_temp icon:tempIcon code:tempIconCode];
         [tempDate addObject:dataWeather];
     }
     self.weekWeather = tempDate;
@@ -258,56 +233,5 @@
             break;
     }
     return weatherIcon;
-}
-@end
-@implementation WeatherCards
-+ (instancetype)sharedInstance {
-    static WeatherCards *cards = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        cards = [[WeatherCards alloc] init];
-        cards.cardLists = @[
-            @"小时预报", @"多日预报", @"空气质量", @"", @"日落", @"月相"
-        ];
-    });
-    return cards;
-}
-@end
-@implementation SquareCards
-+ (instancetype)sharedInstance {
-    static SquareCards *cards = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        cards = [[SquareCards alloc] init];
-        cards.cardLists = @[
-            @"紫外线", @"体感温度", @"湿度", @"风"
-        ];
-    });
-    return cards;
-}
-@end
-@interface WeatherModel ()
-@property (nonatomic, strong) NSMutableArray<CityWeather *> *citys;
-@end
-@implementation WeatherModel
-+ (instancetype)sharedInstance {
-    static WeatherModel *model = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        model = [[WeatherModel alloc] init];
-        model.citys = [NSMutableArray array];
-    });
-    return model;
-}
-- (void)addCity:(CityWeather *)city {
-    for (CityWeather *temp in self.citys) {
-        if ([city.city isEqualToString:temp.city]) {
-            return;
-        }
-    }
-    [self.citys addObject:city];
-}
-- (void)removeCity:(NSInteger)index {
-    [self.citys removeObjectAtIndex:index];
 }
 @end

@@ -74,7 +74,7 @@
         make.right.equalTo(self.contentView).offset(-15);
     }];
 }
-- (void)updateWithData:(CityWeather *)data {
+- (void)updateWithData:(CityWeatherModel *)data {
     self.cityName.text = data.city;
     self.weather.text = data.weather;
     NSString *tempStr = [NSString stringWithFormat:@"%.0f°", data.temperature];

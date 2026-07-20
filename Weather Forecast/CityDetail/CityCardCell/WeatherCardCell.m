@@ -137,7 +137,7 @@
             make.top.equalTo(self.aqi_num.mas_bottom).offset(10);
     }];
 }
-- (void)updateWithAirData:(CityWeather *)data {
+- (void)updateWithAirData:(CityWeatherModel *)data {
     NSString *airQualityText;
     if (data.US_EPA > 0 && data.US_EPA <= 50) {
         airQualityText = @"优质";
@@ -205,7 +205,7 @@
         make.width.mas_equalTo(60);
     }];
 }
-- (void)updateWithSunData:(CityWeather *)data {
+- (void)updateWithSunData:(CityWeatherModel *)data {
     self.sunriseTime.text = data.sunrise;
     self.sunsetTime.text = data.sunset;
 }
@@ -280,7 +280,7 @@
         make.width.mas_equalTo(70);
     }];
 }
-- (void)updateWithMoonData:(CityWeather *)data {
+- (void)updateWithMoonData:(CityWeatherModel *)data {
     self.title.text = data.moon_phase;
     self.up_num.text = data.moonrise;
     self.down_num.text = data.moonset;

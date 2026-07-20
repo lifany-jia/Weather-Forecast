@@ -6,12 +6,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WeatherModel.h"
+#import "AllCityWeatherModel.h"
 #import <Masonry/Masonry.h>
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CityWeatherCell : UITableViewCell
-- (void)updateWithData:(CityWeather *) data;
+- (void)updateWithData:(CityWeatherModel *) data;
 @end
 
 NS_ASSUME_NONNULL_END

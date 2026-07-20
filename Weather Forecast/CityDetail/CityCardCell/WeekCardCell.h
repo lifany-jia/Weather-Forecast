@@ -6,11 +6,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WeatherModel.h"
+#import "DateWeatherModel.h"
 NS_ASSUME_NONNULL_BEGIN
 static NSString *const WeekCellIdentifier = @"WeekCell";
 @interface WeekCardCell : UITableViewCell
-- (void)updateWithData:(NSArray<DateWeather *> *)data;
+- (void)updateWithData:(NSArray<DateWeatherModel *> *)data;
 @end
 
 NS_ASSUME_NONNULL_END

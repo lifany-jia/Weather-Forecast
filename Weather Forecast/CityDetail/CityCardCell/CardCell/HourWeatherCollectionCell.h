@@ -6,11 +6,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WeatherModel.h"
+#import "HourWeatherModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface HourWeatherCardCell : UICollectionViewCell
-- (void)updateWithData:(HourWeather *) data;
+- (void)updateWithData:(HourWeatherModel *) data;
 @end
 
 NS_ASSUME_NONNULL_END
