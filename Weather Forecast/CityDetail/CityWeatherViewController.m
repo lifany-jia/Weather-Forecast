@@ -68,7 +68,7 @@
     self.navigationItem.titleView = self.navigationLabel;
 }
 - (void)setupHeaderView {
-    self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 300)];
+    self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 275)];
     self.cityName = [[UILabel alloc] init];
     self.cityName.textColor = [UIColor systemBackgroundColor];
     self.cityName.font = [UIFont systemFontOfSize:30];

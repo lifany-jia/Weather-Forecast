@@ -179,9 +179,9 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
         [self fetchWeatherForSearchResultAtIndexPath:indexPath];
         return;
     }
-
     PageViewController *page = [[PageViewController alloc] initWithData:self.model index:indexPath.section];
-    [self.navigationController pushViewController:page animated:YES];
+    page.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController:page animated:YES completion:nil];
 }
 
 - (void)editCitys {
