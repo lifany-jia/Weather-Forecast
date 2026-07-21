@@ -195,9 +195,19 @@
     self.weather.alpha = 1.0 - progressWeather;
 }
 - (void)addCity{
-    [[AllCityWeatherModel sharedInstance] addCity:self.cityData];
+    NSInteger result = [[AllCityWeatherModel sharedInstance] addCity:self.cityData];
+    if (result == 0) {
+        [self pushAlert:@"该城市已在收藏中"];
+    } else if (result == 1) {
+        [self pushAlert:@"已添加到收藏"];
+    }
 }
-
+- (void)pushAlert:(NSString *) message {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:confirm];
+    [self presentViewController:alert animated:YES completion:nil];
+}
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UITableViewHeaderFooterView *header = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:nil];
 

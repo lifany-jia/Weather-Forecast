@@ -8,6 +8,7 @@
 #import "HomeViewController.h"
 #import "CityWeatherCell.h"
 #import "CityWeatherViewController.h"
+#import "SearchViewController.h"
 #import "AllCityWeatherModel.h"
 #import "WeatherData.h"
 #import <Masonry/Masonry.h>
@@ -41,16 +42,27 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
     [self setupSearchController];
     [self setupSearchTableView];
     self.model = [AllCityWeatherModel sharedInstance];
-    [self setupTableView];
+    NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey:KCityArrayKey];
+    NSLog(@"array = %ld", array.count);
     __weak typeof(self) weakSelf = self;
-    [[WeatherData sharedInstance] fetchCityForecastWeatherData:@"西安" completion:^(NSDictionary * _Nonnull dictionary, NSError * _Nonnull error) {
-        if (error) return;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            CityWeatherModel *cityWeather = [[CityWeatherModel alloc] initWithData:dictionary];
-            [weakSelf.model.citys addObject:cityWeather];
-            [weakSelf.tableView reloadData];
-        });
-    }];
+    dispatch_group_t group = dispatch_group_create();
+    for (int i = 0; i < array.count; i++) {
+        dispatch_group_enter(group);
+        NSString *cityName = array[i];
+        [[WeatherData sharedInstance] fetchCityForecastWeatherData:cityName completion:^(NSDictionary * _Nonnull dictionary, NSError * _Nonnull error) {
+            if (!error && dictionary) {
+                CityWeatherModel *cityWeather = [[CityWeatherModel alloc] initWithData:dictionary];
+                @synchronized (weakSelf.model.citys) {
+                    [weakSelf.model.citys addObject:cityWeather];
+                }
+            }
+            dispatch_group_leave(group);
+        }];
+    }
+    NSLog(@"完成");
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        [self setupTableView];
+    });
 }
 - (void)setupTitle {
     self.weatherTitle = [[UILabel alloc] init];
@@ -63,6 +75,7 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
             make.left.equalTo(self.view).offset(23);
     }];
 }
+#pragma mark Menu
 - (void)setupBarButton {
     self.array = [NSMutableArray array];
     [self.array addObject:@(1)];
@@ -102,6 +115,8 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
 - (void)refreshMenu {
     self.barButton.menu = [self buildMenu];
 }
+
+#pragma mark CityTableView
 - (void)viewWillAppear:(BOOL)animated {
     [self.tableView reloadData];
 }
@@ -164,18 +179,7 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
     CityWeatherViewController *city = [[CityWeatherViewController alloc] initWithCityData:self.model.citys[indexPath.section]];
     [self presentViewController:city animated:YES completion:nil];
 }
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (tableView == self.tableViewSearch) {
-        return 0;
-    }
-    return 8;   // 原来可能是 20~35
-}
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (tableView == self.tableViewSearch) {
-        return 0;
-    }
-    return 8;
-}
+
 - (void)editCitys {
     [self.tableView setEditing:YES animated:YES];
     self.navigationItem.rightBarButtonItem = self.finishButton;
@@ -190,6 +194,20 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
         [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
+//-(UISwipeActionsConfiguration *)tableView:(UITableView *)tableView trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    UIContextualAction* deleteAction = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive title:@"删除" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
+//        NSInteger index = indexPath.section;
+//        [SavedCityStore removeCity:self.cityModelArray[index]];
+//        [self.cityModelArray removeObjectAtIndex:index];
+//        [self.WeatherModelArray removeObjectAtIndex:index];
+//        [tableView deleteSections:[NSIndexSet indexSetWithIndex:index] withRowAnimation:UITableViewRowAnimationAutomatic];
+//        completionHandler(YES);
+//    }];
+//    UISwipeActionsConfiguration *config = [UISwipeActionsConfiguration configurationWithActions:@[deleteAction]];
+//    config.performsFirstActionWithFullSwipe = YES;
+//    return config;
+//}
+#pragma mark SearchController
 - (void)setupSearchController {
     self.search = [[UISearchController alloc] initWithSearchResultsController:nil];
     // 这里代替了原来的 self.searchBar.delegate = self

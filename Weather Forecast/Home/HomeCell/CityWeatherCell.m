@@ -11,6 +11,7 @@
 @property (nonatomic, strong) UILabel *weather;
 @property (nonatomic, strong) UILabel *temperature;
 @property (nonatomic, strong) UILabel *maxmin_temp;
+@property (nonatomic, strong) UIImageView *backImage;
 @end
 @implementation CityWeatherCell
 
@@ -29,6 +30,7 @@
     if (self) {
         self.layer.cornerRadius = 20;
         self.contentView.backgroundColor = [UIColor clearColor];
+        [self setupBackImage];
         [self setupCell];
     }
     return self;
@@ -74,6 +76,13 @@
         make.right.equalTo(self.contentView).offset(-15);
     }];
 }
+- (void)setupBackImage {
+    self.backImage = [[UIImageView alloc] init];
+    self.backImage.clipsToBounds = YES;
+    self.backImage.contentMode = UIViewContentModeScaleAspectFill;
+    self.backgroundView = self.backImage;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+}
 - (void)updateWithData:(CityWeatherModel *)data {
     self.cityName.text = data.city;
     self.weather.text = data.weather;
@@ -83,8 +92,13 @@
     self.maxmin_temp.text = maxminStr;
     NSString *nameIma = [NSString stringWithFormat:@"%@2.0", data.weatherBackImage];
     UIImage *image = [UIImage imageNamed:nameIma];
-    UIImageView *weatherImage = [[UIImageView alloc] initWithImage:image];
-    weatherImage.contentMode = UIViewContentModeScaleAspectFill;
-    self.backgroundView = weatherImage;
+    self.backImage.image = image;
 }
+
+// 重写该函数，解决tableView按住城市不松手进入highlighted 状态，背景图片会消失/变透明
+//- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+//    [super setHighlighted:highlighted animated:animated];
+//    self.backgroundView.alpha = 1.0;
+//    self.backgroundView.hidden = NO;
+//}
 @end

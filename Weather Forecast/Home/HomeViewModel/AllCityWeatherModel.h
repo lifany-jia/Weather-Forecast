@@ -8,11 +8,11 @@
 #import <Foundation/Foundation.h>
 #import "CityWeatherModel.h"
 NS_ASSUME_NONNULL_BEGIN
-
+static NSString *const KCityArrayKey = @"CityArrayKey";
 @interface AllCityWeatherModel : NSObject
 @property (nonatomic, strong, readonly) NSMutableArray<CityWeatherModel *> *citys;
 + (instancetype) sharedInstance;
-- (void)addCity:(CityWeatherModel *) city;
+- (NSInteger)addCity:(CityWeatherModel *) city;
 - (void)removeCity:(NSInteger) index;
 @end
 
