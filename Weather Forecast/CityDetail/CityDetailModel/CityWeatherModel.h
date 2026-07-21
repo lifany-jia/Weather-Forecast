@@ -36,7 +36,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *moonrise; // moonrise
 @property (nonatomic, copy) NSString *moonset; // moonset
 @property (nonatomic, copy) NSString *moon_phase; // moon_phase
+@property (nonatomic, assign) NSInteger currentTime; // moon_phase
 @property (nonatomic, strong) NSArray<HourWeatherModel *> *todayHourWeather; // time，temp_c，condition.icon
+@property (nonatomic, strong) NSArray<HourWeatherModel *> *yesterdayHourWeather; // time，temp_c，condition.icon
+@property (nonatomic, strong) NSArray<HourWeatherModel *> *currNextHourWeather; // time，temp_c，condition.icon
 @property (nonatomic, strong) NSArray<DateWeatherModel *> *weekWeather; // date，maxtemp_c, mintemp_c，condition.icon
 - (instancetype) initWithData:(NSDictionary *) data;
 @end

@@ -51,7 +51,8 @@
     }];
 }
 - (void)updateWithData:(HourWeatherModel *)data {
-    self.date.text = data.hour;
+    NSString *time = [NSString stringWithFormat:@"%02ld:00", data.hour];
+    self.date.text = time;
     NSString *temp = [NSString stringWithFormat:@"%ld°", (long)data.hour_temp];
     self.temperature.text = temp;
     UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration configurationPreferringMulticolor];

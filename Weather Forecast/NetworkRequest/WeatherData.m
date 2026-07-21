@@ -39,7 +39,7 @@ static NSString *const CityDataErrorDomain = @"CityDataError";
     NSString *alert = @"yes";
     NSString *aqi = @"yes";
     NSString *day = @"7";
-    NSURLComponents *components = [NSURLComponents componentsWithString:@"https://api.weatherapi.com/v1/forecast.json "];
+    NSURLComponents *components = [NSURLComponents componentsWithString:@"https://api.weatherapi.com/v1/forecast.json"];
     components.queryItems = @[
         [NSURLQueryItem queryItemWithName:@"key" value:key],
         [NSURLQueryItem queryItemWithName:@"q" value:city],

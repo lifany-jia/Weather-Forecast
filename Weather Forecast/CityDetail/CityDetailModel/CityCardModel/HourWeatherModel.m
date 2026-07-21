@@ -8,7 +8,7 @@
 #import "HourWeatherModel.h"
 
 @implementation HourWeatherModel
-- (instancetype)initWithHour:(NSString *)hour temperature:(CGFloat)hour_temp icon:(NSString *)icon code:(NSInteger)code{
+- (instancetype)initWithHour:(NSInteger)hour temperature:(CGFloat)hour_temp icon:(NSString *)icon code:(NSInteger)code{
     self = [super init];
     if (self) {
         self.hour = hour;

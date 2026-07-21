@@ -10,6 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CityWeatherViewController : UIViewController
+@property (nonatomic, assign) NSInteger pageIndex;
 - (instancetype)initWithCityData:(CityWeatherModel *) cityData;
 @end
 

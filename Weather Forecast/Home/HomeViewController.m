@@ -8,7 +8,7 @@
 #import "HomeViewController.h"
 #import "CityWeatherCell.h"
 #import "CityWeatherViewController.h"
-#import "SearchViewController.h"
+#import "PageViewController.h"
 #import "AllCityWeatherModel.h"
 #import "WeatherData.h"
 #import <Masonry/Masonry.h>
@@ -44,12 +44,16 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
     self.model = [AllCityWeatherModel sharedInstance];
     NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey:KCityArrayKey];
     NSLog(@"array = %ld", array.count);
+    NSLog(@"arry = %@", array[0]);
     __weak typeof(self) weakSelf = self;
     dispatch_group_t group = dispatch_group_create();
     for (int i = 0; i < array.count; i++) {
         dispatch_group_enter(group);
         NSString *cityName = array[i];
         [[WeatherData sharedInstance] fetchCityForecastWeatherData:cityName completion:^(NSDictionary * _Nonnull dictionary, NSError * _Nonnull error) {
+            if (error) {
+                   NSLog(@"请求失败: %@, error: %@", cityName, error);
+               }
             if (!error && dictionary) {
                 CityWeatherModel *cityWeather = [[CityWeatherModel alloc] initWithData:dictionary];
                 @synchronized (weakSelf.model.citys) {
@@ -176,8 +180,8 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
         return;
     }
 
-    CityWeatherViewController *city = [[CityWeatherViewController alloc] initWithCityData:self.model.citys[indexPath.section]];
-    [self presentViewController:city animated:YES completion:nil];
+    PageViewController *page = [[PageViewController alloc] initWithData:self.model index:indexPath.section];
+    [self.navigationController pushViewController:page animated:YES];
 }
 
 - (void)editCitys {

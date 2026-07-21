@@ -19,6 +19,8 @@
     NSDictionary *location = data[@"location"];
     self.city = [location[@"name"] isKindOfClass:[NSString class]] ? location[@"name"] : @"未知城市";
     self.country = [location[@"country"] isKindOfClass:[NSString class]] ? location[@"country"] : nil;
+    NSString *time = [location[@"localtime"] isKindOfClass:[NSString class]] ? location[@"localtime"] : nil;
+    self.currentTime = [self dateWith:time];
     
     NSDictionary *current = data[@"current"];
     self.temperature = [current[@"temp_c"] doubleValue];
@@ -51,17 +53,41 @@
     self.moonset = [astro[@"moonset"] isKindOfClass:[NSString class]] ? astro[@"moonset"] : nil;
     self.moon_phase = [astro[@"moon_phase"] isKindOfClass:[NSString class]] ? astro[@"moon_phase"] : nil;
     
+    
     NSArray *hours = forecastday[0][@"hour"];
     NSMutableArray *tempHour = [NSMutableArray array];
     for (NSInteger i = 0; i < 24; i++) {
-        NSString *timeStr = [NSString stringWithFormat:@"%02ld:00", (long)i];
+        NSString *timeStr = hours[i][@"time"];
+        NSInteger curr = [self dateWith:timeStr];
         CGFloat hourTemp = [hours[i][@"temp_c"] doubleValue];
         NSInteger hourTempIconCode = [hours[i][@"condition"][@"code"] integerValue];
         NSString *hourTempIcon = [self weatherIconWithCode:hourTempIconCode image:nil];
-        HourWeatherModel *hourWeather = [[HourWeatherModel alloc] initWithHour:timeStr temperature:hourTemp icon:hourTempIcon code:hourTempIconCode];
+        HourWeatherModel *hourWeather = [[HourWeatherModel alloc] initWithHour:curr temperature:hourTemp icon:hourTempIcon code:hourTempIconCode];
         [tempHour addObject:hourWeather];
     }
     self.todayHourWeather = tempHour;
+    
+    NSArray *yesterdayHours = forecastday[1][@"hour"];
+    NSMutableArray *tempHourTwo = [NSMutableArray array];
+    for (NSInteger i = 0; i < 24; i++) {
+        NSString *timeStr = yesterdayHours[i][@"time"];
+        NSInteger curr = [self dateWith:timeStr];
+        CGFloat hourTemp = [yesterdayHours[i][@"temp_c"] doubleValue];
+        NSInteger hourTempIconCode = [yesterdayHours[i][@"condition"][@"code"] integerValue];
+        NSString *hourTempIcon = [self weatherIconWithCode:hourTempIconCode image:nil];
+        HourWeatherModel *hourWeather = [[HourWeatherModel alloc] initWithHour:curr temperature:hourTemp icon:hourTempIcon code:hourTempIconCode];
+        [tempHourTwo addObject:hourWeather];
+    }
+    self.yesterdayHourWeather = tempHourTwo;
+    
+    NSMutableArray *tempHourNext = [NSMutableArray array];
+    for (long i = self.currentTime - 1; i < 24; i++) {
+        [tempHourNext addObject:self.todayHourWeather[i]];
+    }
+    for (long i = 0; i < self.currentTime; i++) {
+        [tempHourNext addObject:self.yesterdayHourWeather[i]];
+    }
+    self.currNextHourWeather = tempHourNext;
     
     NSMutableArray *tempDate = [NSMutableArray array];
     for (NSDictionary *data in forecastday) {
@@ -85,6 +111,14 @@
     } else {
         self.uv_grade = @"很强";
     }
+}
+- (NSInteger)dateWith:(NSString *) string {
+    NSString *hourString = [[string componentsSeparatedByString:@" "].lastObject
+         componentsSeparatedByString:@":"].firstObject;
+
+    NSInteger hour = hourString.integerValue;
+    return hour;
+    
 }
 - (NSString *)weatherIconWithCode:(NSInteger) code image:(NSString **) image{
     NSString *weatherIcon;

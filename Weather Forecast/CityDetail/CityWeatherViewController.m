@@ -161,7 +161,7 @@
         return cell;
     } else if (indexPath.section == 0) {
         HourCardCell *cell = [tableView dequeueReusableCellWithIdentifier:HourCellIdentifier forIndexPath:indexPath];
-        [cell updateWithData:self.cityData.todayHourWeather];
+        [cell updateWithData:self.cityData.currNextHourWeather];
         return cell;
     } else if (indexPath.section == 1) {
         WeekCardCell *cell = [tableView dequeueReusableCellWithIdentifier:WeekCellIdentifier forIndexPath:indexPath];
