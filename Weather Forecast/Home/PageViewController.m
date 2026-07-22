@@ -28,6 +28,8 @@
     initialVC.pageIndex = self.startIndex;
     [self setViewControllers:@[initialVC] direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
 }
+
+
 - (void)setupButton {
     UIButtonConfiguration *config = [UIButtonConfiguration clearGlassButtonConfiguration];
     config.image = [UIImage systemImageNamed:@"map"];

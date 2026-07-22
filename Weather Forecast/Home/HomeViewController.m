@@ -128,6 +128,7 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleInsetGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.rowHeight = 125;
     self.tableView.backgroundColor = [UIColor systemGroupedBackgroundColor];
     [self.tableView registerClass:[CityWeatherCell class] forCellReuseIdentifier:@"cell"];
     [self.view addSubview:self.tableView];
