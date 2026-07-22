@@ -36,8 +36,14 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCity)];
-    self.navigationItem.rightBarButtonItem = add;
+    if ([[AllCityWeatherModel sharedInstance] isCityInModel:self.cityData.city]) {
+        UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCity)];
+        self.navigationItem.rightBarButtonItem = add;
+    } else {
+        UIBarButtonItem *delete = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"trash"] style:UIBarButtonItemStylePlain target:self action:@selector(removeCity)];
+        self.navigationItem.rightBarButtonItem = delete;
+    }
+    
     UIImageView *backGroudView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.cityData.weatherBackImage]];
     backGroudView.contentMode = UIViewContentModeScaleAspectFill;
     backGroudView.clipsToBounds = YES;
@@ -194,13 +200,18 @@
     self.maxmin_temperature.alpha = 1.0 - progressWeather;
     self.weather.alpha = 1.0 - progressWeather;
 }
-- (void)addCity{
-    NSInteger result = [[AllCityWeatherModel sharedInstance] addCity:self.cityData];
-    if (result == 0) {
-        [self pushAlert:@"该城市已在收藏中"];
-    } else if (result == 1) {
-        [self pushAlert:@"已添加到收藏"];
-    }
+- (void)addCity {
+    [[AllCityWeatherModel sharedInstance] addCity:self.cityData];
+    [self pushAlert:@"已添加到收藏"];
+    UIBarButtonItem *delete = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"trash"] style:UIBarButtonItemStylePlain target:self action:@selector(removeCity)];
+    self.navigationItem.rightBarButtonItem = delete;
+}
+- (void)removeCity {
+    [[AllCityWeatherModel sharedInstance] removeCityWithData:self.cityData];
+    [self pushAlert:@"已删除"];
+    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCity)];
+    self.navigationItem.rightBarButtonItem = add;
+    
 }
 - (void)pushAlert:(NSString *) message {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];

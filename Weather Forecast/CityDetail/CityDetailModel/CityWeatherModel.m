@@ -268,4 +268,20 @@
     }
     return weatherIcon;
 }
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    }
+    if (![object isKindOfClass:[CityWeatherModel class]]) {
+        return NO;
+    }
+    CityWeatherModel *other = (CityWeatherModel *)object;
+    return [self.city isEqualToString:other.city];
+}
+
+- (NSUInteger)hash {
+    return self.city.hash;
+}
+
 @end

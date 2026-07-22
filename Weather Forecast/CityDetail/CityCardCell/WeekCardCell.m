@@ -57,7 +57,7 @@
     [self.tableView registerClass:[WeekWeatherTableViewCell class] forCellReuseIdentifier:@"cell"];
     [self.contentView addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self.contentView);
+        make.edges.equalTo(self.contentView);
         make.height.mas_equalTo(349);
     }];
 }

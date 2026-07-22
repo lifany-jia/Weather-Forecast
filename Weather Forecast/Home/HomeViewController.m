@@ -42,11 +42,14 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
     [self setupSearchController];
     [self setupSearchTableView];
     self.model = [AllCityWeatherModel sharedInstance];
+    // 先清空后添加，防止viewDidLoad重复调用
+    [self.model.citys removeAllObjects];
     NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey:KCityArrayKey];
     NSLog(@"array = %ld", array.count);
-    NSLog(@"arry = %@", array[0]);
     __weak typeof(self) weakSelf = self;
     dispatch_group_t group = dispatch_group_create();
+    // 用字典按城市名暂存请求结果，解决异步回调顺序不确定导致索引错位的问题
+    NSMutableDictionary<NSString *, CityWeatherModel *> *resultMap = [NSMutableDictionary dictionary];
     for (int i = 0; i < array.count; i++) {
         dispatch_group_enter(group);
         NSString *cityName = array[i];
@@ -56,16 +59,22 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
                }
             if (!error && dictionary) {
                 CityWeatherModel *cityWeather = [[CityWeatherModel alloc] initWithData:dictionary];
-                @synchronized (weakSelf.model.citys) {
-                    [weakSelf.model.citys addObject:cityWeather];
+                @synchronized (resultMap) {
+                    resultMap[cityName] = cityWeather;
                 }
             }
             dispatch_group_leave(group);
         }];
     }
-    NSLog(@"完成");
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        [self setupTableView];
+        // 按 NSUserDefaults 的顺序从字典取出数据，保证 citys 和 NSUserDefaults 索引严格一致
+        for (NSString *cityName in array) {
+            CityWeatherModel *model = resultMap[cityName];
+            if (model) {
+                [weakSelf.model.citys addObject:model];
+            }
+        }
+        [weakSelf setupTableView];
     });
 }
 - (void)setupTitle {
@@ -181,7 +190,7 @@ static NSString *const WeatherErrorDomain = @"WeatherError";
         return;
     }
     PageViewController *page = [[PageViewController alloc] initWithData:self.model index:indexPath.section];
-    page.modalPresentationStyle = UIModalPresentationFullScreen;
+    page.modalPresentationStyle = UIModalPresentationOverFullScreen;
     [self presentViewController:page animated:YES completion:nil];
 }
 

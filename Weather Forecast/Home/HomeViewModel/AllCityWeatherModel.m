@@ -19,13 +19,7 @@
     });
     return model;
 }
-- (NSInteger)addCity:(CityWeatherModel *)city {
-    for (CityWeatherModel *temp in self.citys) {
-        if ([city.city isEqualToString:temp.city]) {
-            return 0;
-        }
-    }
-    
+- (void)addCity:(CityWeatherModel *)city {
     NSLog(@"addCity");
     [self.citys addObject:city];
     NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey:KCityArrayKey];
@@ -35,9 +29,17 @@
     [mutableArray addObject:city.city];
     [[NSUserDefaults standardUserDefaults] setObject:mutableArray forKey:KCityArrayKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    return 1;
+}
+- (void)removeCityWithData:(CityWeatherModel *)city {
+    [self.citys removeObject:city];
+    NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey:KCityArrayKey];
+    NSMutableArray *mutableArray = array ? [array mutableCopy] : [NSMutableArray array];
+    [mutableArray removeObject:city.city];
+    [[NSUserDefaults standardUserDefaults] setObject:mutableArray forKey:KCityArrayKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 - (void)removeCity:(NSInteger)index {
+    NSLog(@"removw");
     [self.citys removeObjectAtIndex:index];
     NSArray *array = [[NSUserDefaults standardUserDefaults] objectForKey:KCityArrayKey];
     NSMutableArray *mutableArray = array ? [array mutableCopy] : [NSMutableArray array];
@@ -46,5 +48,13 @@
     }
     [[NSUserDefaults standardUserDefaults] setObject:mutableArray forKey:KCityArrayKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
+}
+- (NSInteger)isCityInModel:(NSString *) cityName {
+    for (CityWeatherModel *model in self.citys) {
+        if ([model.city isEqualToString:cityName]) {
+            return 0;
+        }
+    }
+    return 1;
 }
 @end

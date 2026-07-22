@@ -8,7 +8,7 @@
 #import "PageViewController.h"
 #import "CityWeatherViewController.h"
 #import <Masonry/Masonry.h>
-@interface PageViewController () <UIPageViewControllerDelegate, UIPageViewControllerDataSource>
+@interface PageViewController () <UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIScrollViewDelegate>
 @property (nonatomic, strong) AllCityWeatherModel *model;
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, strong) UIPageControl *page;
@@ -27,8 +27,13 @@
     CityWeatherViewController *initialVC = [[CityWeatherViewController alloc] initWithCityData:self.model.citys[self.startIndex]];
     initialVC.pageIndex = self.startIndex;
     [self setViewControllers:@[initialVC] direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+    for (UIView *view in self.view.subviews) {
+        if ([view isKindOfClass:[UIScrollView class]]) {
+            UIScrollView *scrollView = (UIScrollView *)view;
+            scrollView.delegate = self;
+        }
+    }
 }
-
 
 - (void)setupButton {
     UIButtonConfiguration *config = [UIButtonConfiguration clearGlassButtonConfiguration];
@@ -101,9 +106,16 @@
     }
     CityWeatherViewController *currentVC = (CityWeatherViewController *)pageViewController.viewControllers.firstObject;
     self.page.currentPage = currentVC.pageIndex;
-    
+    self.startIndex = currentVC.pageIndex;
 }
 - (void)backAction {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    CGFloat width = scrollView.bounds.size.width;
+    
+    if (self.startIndex == 0 && scrollView.contentOffset.x < width * 0.8) {
+        [self dismissViewControllerAnimated:NO completion:nil];
+    }
 }
 @end
